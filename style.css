@@ -148,17 +148,17 @@ body {
 
 /* --- Footer --- */
 .footer {
-    width: 100vw;                     /* full viewport width */
-    margin-left: calc(50% - 50vw);    /* break out of any parent width */
+    width: 100vw;                   
+    margin-left: calc(50% - 50vw);   
     background-color: #b54520;
     color: #f9f9f9;
     text-align: center;
     padding: 30px;
     margin-top: 40px;
-    display: block;
 }
 
 }
+
 
 
 
