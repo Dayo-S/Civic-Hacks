@@ -9,6 +9,41 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
+
+let streetImages = [];
+fetch('streetviewImages.geojson')
+    .then(res => res.json())
+    .then(data => streetImages = data.features);
+
+function onEachStreet(feature, layer) {
+    const props = feature.properties;
+
+    // A. THE HOVER EFFECT
+    layer.on('mouseover', function (e) {
+        // Show the info card and image immediately
+        const statsContent = document.getElementById('stats-content');
+        const instruction = document.getElementById('instruction');
+        const imgElement = document.getElementById('street-view-img');
+        
+        if (instruction) instruction.classList.add('hidden');
+        if (statsContent) statsContent.classList.remove('hidden');
+
+        // Update Text Info
+        document.getElementById('street-name').innerText = props.address_st;
+        document.getElementById('pci-score').innerText = `Score: ${props.score}`;
+        document.getElementById('pci-label').innerText = `Condition: ${props.label}`;
+
+        // FIND AND SHOW IMAGE 
+        // Match using latitude/longitude properties from your geojson 
+        const nearestImage = streetImages.find(img => 
+            Math.abs(img.properties.lat - feature.geometry.coordinates[0][1]) < 0.005
+        );
+
+        if (nearestImage) {
+            imgElement.src = nearestImage.properties.image_url; // 
+            imgElement.style.display = 'block';
+        }
+    });
 // -------------------------------
 // 2. Load Pavement GeoJSON
 // -------------------------------
@@ -102,6 +137,7 @@ async function askGroq(street, score, label) {
     }
     
 }
+
 
 
 
