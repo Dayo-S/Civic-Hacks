@@ -1,16 +1,17 @@
 export default async function handler(req, res) {
-  // --- CORS HEADERS (required for local → Vercel calls) ---
+  // --- CORS ---
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // Handle preflight request
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
 
   try {
-    const { street, score, label } = req.body;
+    // Parse JSON body safely
+    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+    const { street, score, label } = body;
 
     const prompt = `
 Context: You are a Brookline civil engineer.
@@ -32,11 +33,8 @@ Task: Write a 2-3 sentence Spotlight summary for residents.
 
     const data = await groqRes.json();
 
-    if (!data.choices || !data.choices[0]) {
-      return res.status(500).json({
-        error: "Groq returned no choices",
-        raw: data
-      });
+    if (!data.choices) {
+      return res.status(500).json({ error: "Groq returned an error", raw: data });
     }
 
     res.status(200).json({
@@ -45,9 +43,10 @@ Task: Write a 2-3 sentence Spotlight summary for residents.
 
   } catch (err) {
     res.status(500).json({
-      error: "Proxy error",
+      error: "Proxy crashed",
       details: err.message
     });
   }
 }
+
 
