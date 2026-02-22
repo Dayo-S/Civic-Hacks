@@ -25,6 +25,27 @@
         <div id="map" style="width: 100%; height: 600px;"></div>
 
         <aside id="stats-section" class="glass-card">
+    <div id="image-container" style="width: 100%; margin-bottom: 12px; overflow: hidden; border-radius: 8px; background: #eee; height: 180px;">
+        <img id="street-view-img" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;" alt="Street View Inspection">
+        <div id="image-loader" style="text-align: center; line-height: 180px; color: #999; font-size: 12px;">
+            Hover over a street to inspect
+        </div>
+    </div>
+
+    <div class="card-header">
+        <h3 id="street-name">Select a Street</h3>
+    </div>
+    
+    <div id="stats-content" class="hidden">
+        <div class="stat-badge">
+            <span id="pci-score">Score: —</span>
+            <span id="pci-label">Condition: —</span>
+        </div>
+        <p id="ai-narrative">Click to generate AI Report.</p>
+    </div>
+</aside>
+
+        <aside id="stats-section" class="glass-card">
             <div class="card-header">
                 <h3 id="street-name">Click a street</h3>
             </div>
@@ -94,6 +115,7 @@
     </footer>
 </body>
 </html>
+
 
 
 
