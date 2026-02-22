@@ -28,7 +28,7 @@ function onEachStreet(feature, layer) {
 }
 
 // 4. LOAD THE DATA IMMEDIATELY (Always Showing)
-fetch('pavements.geojson')
+fetch('/pavements.geojson')
     .then(response => response.json())
     .then(data => {
         L.geoJSON(data, {
@@ -56,4 +56,5 @@ async function askGroq(street, score, label) {
     return "Error connecting to AI service.";
   }
 }
+
 
