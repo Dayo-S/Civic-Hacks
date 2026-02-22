@@ -1,43 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brookline Infrastructure Map</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brookline Pavement Explorer</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <header>
-    <h1>Brookline Infrastructure Spotlight</h1>
-  </header>
+<body id="body">
 
-  <div id="map" style="width: 100vw; height: 100vh;"></div>
+    <header id="header-title">
+        <h1>Explore the Streets of Brookline</h1>
+        <p id="subtitle">
+            Below you will find a map of the streets in Brookline, Massachusetts, color-coded by their pavement condition. 
+            Browse the interactive graphic to examine the condition of each street segment.
+        </p>
+    </header>
 
-  <div class="glass-card" id="stats-section" class="hidden">
-    <div class="card-header">
-      <h3 id="street-name">Click a street</h3>
-    </div>
-    <div class="stat-badge">
-      <span id="pci-score">Score: —</span>
-      <span id="pci-label">Condition: —</span>
-    </div>
-    <p id="instruction">
-      Tap a highlighted street to see its condition and an AI-generated spotlight.
-    </p>
-    <p id="ai-narrative">
-      Waiting for a street selection…
-    </p>
-  </div>
-  
+    <main id="map-container" style="position: relative;">
+        <div id="map" style="width: 100%; height: 600px;"></div>
+
+        <aside id="stats-section" class="glass-card">
+            <div class="card-header">
+                <h3 id="street-name">Click a street</h3>
+            </div>
+            <div id="stats-content" class="hidden">
+                <div class="stat-badge">
+                    <span id="pci-score">Score: —</span>
+                    <span id="pci-label">Condition: —</span>
+                </div>
+                <p id="ai-narrative" aria-live="polite">
+                    Waiting for a street selection…
+                </p>
+            </div>
+            <p id="instruction">
+                Tap a highlighted street to see its condition and an AI-generated spotlight.
+            </p>
+        </aside>
+
+        <div class="key">
+            <div><div class='box green'></div>= Good</div>
+            <div><div class='box green-ish'></div>= Satisfactory</div>
+            <div><div class='box cream'></div>= Fair</div>
+            <div><div class='box yellow'></div>= Poor</div>
+            <div><div class='box orange'></div>= Very Poor</div>
+            <div><div class='box red'></div>= Serious</div>
+            <div><div class='box dark-red'></div>= Failed</div>
+            <div><div class='box grey'></div>= No Data Available</div>
+        </div>
+    </main>
+
+    <section id="future">
+        <hr class="line">
+        <h2 id="h2_future">Future Enhancements</h2>
+        <p class="p">
+            We're working on predictive analytics to forecast pavement deterioration, 
+            integration with maintenance scheduling systems, and a public reporting tool 
+            so residents can flag issues directly on the map.
+        </p>
+    </section>
+
+    <section id="aboutUs">
+        <hr class="line">
+        <h2 id="h2_about">About Us</h2>
+        <p class="p">
+            We're a team of urban planners and developers passionate about making 
+            infrastructure data accessible. Our goal is to empower communities with 
+            the tools they need to understand and improve their neighborhoods.
+        </p>
+    </section>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
-  <script src="/spotlight.js"></script>
+    
+    <script src="pavements.js"></script>
+
+    <script src="spotlight.js"></script>
+
+    <footer class="footer">
+        © February 2026 Brookline Pavement Explorer
+    </footer>
 </body>
 </html>
-
 
 
 
