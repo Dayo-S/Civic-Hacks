@@ -1,0 +1,39 @@
+.glass-card {
+  width: 320px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(15px); /* This creates the "frosted glass" effect */
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+  position: absolute; /* Place it over your map */
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #1a1a1a;
+}
+
+.stat-badge {
+  background: #007bff;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+  font-size: 0.9rem;
+}
+
+#ai-narrative {
+  line-height: 1.5;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.hidden { display: none; }
