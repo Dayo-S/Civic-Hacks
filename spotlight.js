@@ -6,9 +6,6 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-// 2. Define the Groq API Key 
-const GROQ_API_KEY = "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";
-
 // 3. Define interaction logic (what happens when you click) 
 function onEachStreet(feature, layer) {
     layer.on('click', async function () {
@@ -59,3 +56,4 @@ async function askGroq(street, score, label) {
     return "Error connecting to AI service.";
   }
 }
+
