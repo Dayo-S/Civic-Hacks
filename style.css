@@ -39,6 +39,13 @@ body {
     background-color: #b54520; /* Slightly darker than header for contrast */
 }
 
+/* Highlights the street segment on hover */
+.leaflet-interactive:hover {
+    stroke-width: 12px !important;
+    stroke-opacity: 1 !important;
+    cursor: crosshair;
+}
+
 /* --- AI Spotlight Card --- */
 .glass-card {
     width: 320px;
@@ -157,6 +164,7 @@ body {
 }
 
 }
+
 
 
 
