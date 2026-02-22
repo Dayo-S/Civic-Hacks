@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Parse JSON body safely
+    // Parse JSON safely
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
     const { street, score, label } = body;
 
