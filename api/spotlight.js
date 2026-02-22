@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  // CORS
+  // 1. CORS Headers
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -8,35 +8,27 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
   try {
-    // SAFELY PARSE BODY
-    let body = req.body;
+    // 2. Vercel automatically parses req.body for application/json
+    const { street, score, label } = req.body;
 
-    if (!body) {
-      const raw = await new Promise(resolve => {
-        let data = "";
-        req.on("data", chunk => (data += chunk));
-        req.on("end", () => resolve(data));
-      });
+    // Debugging: This will show up in your Vercel Logs
+    console.log("Received body:", req.body);
 
-      body = raw ? JSON.parse(raw) : {};
-    }
-
-    const { street, score, label } = body;
-
-    if (!street || !score || !label) {
+    if (!street || score === undefined || !label) {
       return res.status(400).json({
         error: "Missing required fields",
-        received: body
+        received: req.body
       });
     }
 
-    const prompt = `
-Context: You are a Brookline civil engineer.
-Data: Street: ${street}, PCI Score: ${score}, Condition: ${label}.
-Task: Write a 2-3 sentence Spotlight summary for residents.
-`.trim();
+    const prompt = `Context: You are a Brookline civil engineer. Data: Street: ${street}, PCI Score: ${score}, Condition: ${label}. Task: Write a 2-3 sentence Spotlight summary for residents.`.trim();
 
+    // 3. Call Groq
     const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -51,8 +43,9 @@ Task: Write a 2-3 sentence Spotlight summary for residents.
 
     const data = await groqRes.json();
 
-    if (!data.choices) {
-      return res.status(500).json({ error: "Groq returned an error", raw: data });
+    if (!groqRes.ok || !data.choices) {
+      console.error("Groq Error:", data);
+      return res.status(500).json({ error: "Groq API error", details: data });
     }
 
     res.status(200).json({
@@ -60,10 +53,10 @@ Task: Write a 2-3 sentence Spotlight summary for residents.
     });
 
   } catch (err) {
+    console.error("Server Error:", err);
     res.status(500).json({
-      error: "Proxy crashed",
+      error: "Internal Server Error",
       details: err.message
     });
   }
 }
-
