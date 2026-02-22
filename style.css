@@ -123,11 +123,11 @@ body {
 .key > div {
     display: flex;            
     align-items: center;
+    justify-content: center;
     gap: 8px;                 
     font-size: 14px;
     white-space: nowrap;       
 }
-
 
 .box {
     height: 20px;
@@ -156,5 +156,6 @@ body {
     background-color: #b54520;
     margin-top: 40px;
 }
+
 
 
