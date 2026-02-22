@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const prompt = `Context: You are a Brookline civil engineer. Data: Street: ${street}, PCI Score: ${score}, Condition: ${label}. Task: Write a 2-3 sentence Spotlight summary for residents.`.trim();
+    const prompt = `Context: You are supposed to share about the conditions of Brookline pavement: Incorporate how the roads can affect bike rideability, traffic, be affected by the weather, and possible plans for repair using a good resource like the 2026 Brookline, MA Financial Plan. (Don't mention anything redundant like saying "This is a spotlight" or "this is an excerpt") Data: Street: ${street}, PCI Score: ${score}, Condition: ${label}. Task: Write a 2-3 sentence Spotlight summary for residents and engineers.`.trim();
 
     // 3. Call Groq
     const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
