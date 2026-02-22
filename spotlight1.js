@@ -57,7 +57,7 @@ function attachStreetClick(feature, layer) {
 // -------------------------------
 async function askGroq(street, score, label) {
     try {
-        const response = await fetch("/api/spotlight", {
+        const response = await fetch("https://civic-hacks-ofom.vercel.app/api/spotlight", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ street, score, label })   // ⭐ FIXED
@@ -69,6 +69,7 @@ async function askGroq(street, score, label) {
         return "Error connecting to AI service.";
     }
 }
+
 
 
 
