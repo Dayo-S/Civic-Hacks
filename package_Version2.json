@@ -1,0 +1,12 @@
+{
+  "name": "civic-hacks",
+  "version": "1.0.0",
+  "description": "Brookline Infrastructure Spotlight",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
