@@ -57,20 +57,23 @@ function attachStreetClick(feature, layer) {
 // -------------------------------
 async function askGroq(street, score, label) {
     try {
+        console.log("Calling /api/spotlight with:", { street, score, label });
         const response = await fetch("/api/spotlight", {
             method: "POST",
             body: JSON.stringify({ street, score, label }),
             headers: { "Content-Type": "application/json" }
-
         });
 
+        console.log("Response status:", response.status);
         const data = await response.json();
+        console.log("Response data:", data);
+        
         return data.result || "AI could not generate a report.";
     } catch (err) {
+        console.error("Error details:", err);
         return "Error connecting to AI service.";
     }
 }
-
 
 
 
