@@ -59,8 +59,9 @@ async function askGroq(street, score, label) {
     try {
         const response = await fetch("https://civic-hacks-ofom.vercel.app/api/spotlight", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ street, score, label })   // ⭐ FIXED
+            body: JSON.stringify({ street, score, label }),
+            headers: { "Content-Type": "application/json" }
+
         });
 
         const data = await response.json();
@@ -69,6 +70,7 @@ async function askGroq(street, score, label) {
         return "Error connecting to AI service.";
     }
 }
+
 
 
 
