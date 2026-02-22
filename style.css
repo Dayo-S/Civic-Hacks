@@ -120,6 +120,15 @@ body {
     font-size: 14px;
 }
 
+.key > div {
+    display: flex;            
+    align-items: center;
+    gap: 8px;                 
+    font-size: 14px;
+    white-space: nowrap;       
+}
+
+
 .box {
     height: 20px;
     width: 20px;
@@ -147,4 +156,5 @@ body {
     background-color: #b54520;
     margin-top: 40px;
 }
+
 
