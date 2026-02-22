@@ -1,4 +1,14 @@
 export default async function handler(req, res) {
+  // --- CORS HEADERS (required for local → Vercel calls) ---
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Handle preflight request
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   try {
     const { street, score, label } = req.body;
 
@@ -23,12 +33,21 @@ Task: Write a 2-3 sentence Spotlight summary for residents.
     const data = await groqRes.json();
 
     if (!data.choices || !data.choices[0]) {
-      return res.status(500).json({ error: "Groq returned no choices", raw: data });
+      return res.status(500).json({
+        error: "Groq returned no choices",
+        raw: data
+      });
     }
 
-    res.status(200).json({ result: data.choices[0].message.content });
+    res.status(200).json({
+      result: data.choices[0].message.content
+    });
 
   } catch (err) {
-    res.status(500).json({ error: "Proxy error", details: err.message });
+    res.status(500).json({
+      error: "Proxy error",
+      details: err.message
+    });
   }
 }
+
