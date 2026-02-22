@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  // --- CORS ---
+  // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -9,9 +9,27 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Parse JSON safely
-    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+    // SAFELY PARSE BODY
+    let body = req.body;
+
+    if (!body) {
+      const raw = await new Promise(resolve => {
+        let data = "";
+        req.on("data", chunk => (data += chunk));
+        req.on("end", () => resolve(data));
+      });
+
+      body = raw ? JSON.parse(raw) : {};
+    }
+
     const { street, score, label } = body;
+
+    if (!street || !score || !label) {
+      return res.status(400).json({
+        error: "Missing required fields",
+        received: body
+      });
+    }
 
     const prompt = `
 Context: You are a Brookline civil engineer.
@@ -48,5 +66,6 @@ Task: Write a 2-3 sentence Spotlight summary for residents.
     });
   }
 }
+
 
 
