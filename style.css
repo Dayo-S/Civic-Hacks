@@ -149,7 +149,6 @@ body {
 /* --- Footer --- */
 .footer {
     width: 100vw;                   
-    margin-left: calc(50% - 50vw);   
     background-color: #b54520;
     color: #f9f9f9;
     text-align: center;
@@ -158,6 +157,7 @@ body {
 }
 
 }
+
 
 
 
