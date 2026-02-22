@@ -47,7 +47,7 @@ fetch('pavements.geojson')
 // 5. AI Function 
 async function askGroq(street, score, label) {
   try {
-    const response = await fetch("/api/spotlight", {
+    const response = await fetch("https://civic-hacks-ofom.vercel.app/api/spotlight", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ street, score, label })
@@ -59,4 +59,3 @@ async function askGroq(street, score, label) {
     return "Error connecting to AI service.";
   }
 }
-
