@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Brookline Infrastructure Map</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <link rel="stylesheet" href="style1.css">
+    
+    <style>
+        /* CRITICAL: Ensure the map has a defined height */
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; }
+        #map { width: 100%; height: 100vh; }
+
+        /* Style for the Legend */
+        .legend {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            line-height: 1.5;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+        }
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.9;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <div id="spotlight-card" class="glass-card">
+        <div class="card-header">
+            <span class="icon">📍</span>
+            <h3 id="street-name">Infrastructure Spotlight</h3>
+        </div>
+        
+        <div id="card-content">
+            <p id="instruction" class="instruction-text">Click a street on the map to see the latest stats and news.</p>
+            
+            <div id="stats-section" class="hidden">
+                <div class="stat-badge">
+                    <span id="pci-label">Condition: --</span>
+                    <strong id="pci-score">Score: --</strong>
+                </div>
+                <p id="ai-narrative">Loading the expert report...</p>
+            </div>
+        </div>
+        
+        <div class="news-footer">
+            <small>Live Data Feed: 2026 Brookline Plan</small>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="pavements.js"></script>
+    <script src="spotlight.js"></script>
+
+    <script>
+        // --- 1. Map Initialization ---
+        // Center on Grover Street area
+        const map = L.map('map').setView([42.587, -70.857], 16);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // --- 2. Load GeoJSON Data ---
+        if (typeof myPavementData !== 'undefined') {
+            L.geoJSON(myPavementData, {
+                // Style lines based on the 'stroke' property in pavements.js
+                style: function(feature) {
+                    return {
+                        color: feature.properties.stroke || '#666',
+                        weight: 6,
+                        opacity: 0.8,
+                        lineCap: 'round'
+                    };
+                },
+                // Connect the click logic from spotlight.js
+                onEachFeature: onEachStreet 
+            }).addTo(map);
+        } else {
+            console.error("Data error: 'myPavementData' not found. Make sure pavements.js is linked correctly.");
+        }
+
+        // --- 3. Add Legend Control ---
+        const legend = L.control({position: 'bottomright'});
+
+        legend.onAdd = function (map) {
+            const div = L.DomUtil.create('div', 'legend');
+            const grades = ['Good', 'Satisfactory', 'Fair', 'Poor'];
+            const colors = ['#00B050', '#91CF51', '#FFC000', '#FF0000'];
+
+            div.innerHTML = '<strong>Condition</strong><br>';
+            for (let i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + colors[i] + '"></i> ' + grades[i] + '<br>';
+            }
+            return div;
+        };
+
+        legend.addTo(map);
+    </script>
+</body>
+</html>
