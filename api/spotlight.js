@@ -10,11 +10,16 @@ export default async function handler(req, res) {
 
   try {
     // SAFELY PARSE BODY
-   let body = req.body || {};
+    let body = req.body;
 
-  if (typeof body === 'string') {
-      body = JSON.parse(body);
-}
+    if (!body) {
+      const raw = await new Promise(resolve => {
+        let data = "";
+        req.on("data", chunk => (data += chunk));
+        req.on("end", () => resolve(data));
+      });
+
+      body = raw ? JSON.parse(raw) : {};
     }
 
     const { street, score, label } = body;
@@ -61,6 +66,4 @@ Task: Write a 2-3 sentence Spotlight summary for residents.
     });
   }
 }
-
-
 
