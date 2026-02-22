@@ -1,7 +1,6 @@
 // -------------------------------
 // 1. Initialize the Map
 // -------------------------------
-// Using the coordinates from your second version as they seem more centered on Brookline
 var map = L.map('map').setView([42.326, -71.122], 14);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -9,22 +8,49 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-
+// Global data storage for images
 let streetImages = [];
+
+// Load the street images first
 fetch('streetviewImages.geojson')
     .then(res => res.json())
-    .then(data => streetImages = data.features);
+    .then(data => {
+        streetImages = data.features;
+        console.log("Imagery data loaded:", streetImages.length, "points");
+    })
+    .catch(err => console.error("Error loading images:", err));
 
+// -------------------------------
+// 2. Load Pavement GeoJSON
+// -------------------------------
+fetch('pavements.geojson')
+    .then(response => response.json())
+    .then(data => {
+        L.geoJSON(data, {
+            style: feature => ({
+                color: getColorByLabel(feature.properties.label),
+                weight: 6,
+                opacity: 0.8
+            }),
+            onEachFeature: onEachStreet
+        }).addTo(map);
+    })
+    .catch(error => console.error('Error loading pavements:', error));
+
+// -------------------------------
+// 3. Consolidated Interaction Logic
+// -------------------------------
 function onEachStreet(feature, layer) {
     const props = feature.properties;
 
-    // A. THE HOVER EFFECT
-    layer.on('mouseover', function (e) {
-        // Show the info card and image immediately
+    // A. THE HOVER EFFECT (Instant Image & Stats)
+    layer.on('mouseover', function () {
         const statsContent = document.getElementById('stats-content');
         const instruction = document.getElementById('instruction');
         const imgElement = document.getElementById('street-view-img');
-        
+        const loader = document.getElementById('image-loader');
+
+        // Show UI sections
         if (instruction) instruction.classList.add('hidden');
         if (statsContent) statsContent.classList.remove('hidden');
 
@@ -33,72 +59,44 @@ function onEachStreet(feature, layer) {
         document.getElementById('pci-score').innerText = `Score: ${props.score}`;
         document.getElementById('pci-label').innerText = `Condition: ${props.label}`;
 
-        // FIND AND SHOW IMAGE 
-        // Match using latitude/longitude properties from your geojson 
+        // Find nearest image from the geojson data
+        // We compare the street's first coordinate to our image points
+        const streetLat = feature.geometry.coordinates[0][1];
         const nearestImage = streetImages.find(img => 
-            Math.abs(img.properties.lat - feature.geometry.coordinates[0][1]) < 0.005
+            Math.abs(img.properties.lat - streetLat) < 0.005
         );
 
         if (nearestImage) {
-            imgElement.src = nearestImage.properties.image_url; // 
+            imgElement.src = nearestImage.properties.image_url;
             imgElement.style.display = 'block';
+            if (loader) loader.style.display = 'none';
+        } else {
+            imgElement.style.display = 'none';
+            if (loader) {
+                loader.style.display = 'block';
+                loader.innerText = "No image for this segment";
+            }
         }
     });
-// -------------------------------
-// 2. Load Pavement GeoJSON
-// -------------------------------
-fetch('/pavements.geojson')
-    .then(response => response.json())
-    .then(data => {
-        const layer = L.geoJSON(data, {
-            style: feature => ({
-                // Using the custom color function from your second script
-                color: getColorByLabel(feature.properties.label),
-                weight: 6,
-                opacity: 0.8
-            }),
-            onEachFeature: onEachStreet
-        });
 
-        layer.addTo(map);
-    })
-    .catch(error => console.error('Error loading GeoJSON:', error));
-
-// -------------------------------
-// 3. Combined Interaction Logic
-// -------------------------------
-function onEachStreet(feature, layer) {
-    // A. Add the standard Popup
-    let props = feature.properties;
-    let popupText = `<strong>${props.address_st}</strong><br/>
-                    Condition: ${props.label}<br/>
-                    Score: ${props.score}`;
-    layer.bindPopup(popupText);
-
-    // B. Add the AI Spotlight Trigger on Click
+    // B. THE CLICK EFFECT (Triggers AI Report)
     layer.on('click', async function () {
-        const streetName = props.address_st;
-        const score = props.score;
-        const status = props.label;
+        const aiNarrative = document.getElementById('ai-narrative');
+        const statsSection = document.getElementById('stats-section');
 
-        // Update UI Elements
-        const instruction = document.getElementById('instruction');
-        const statsContent = document.getElementById('stats-content');
+        // Show loading state
+        aiNarrative.innerText = "Analyzing infrastructure data and generating report...";
+        statsSection.classList.add('loading-glow'); // Adding the "spice" effect
+
+        // Fetch AI narrative from backend
+        const aiReport = await askGroq(props.address_st, props.score, props.label);
         
-        if (instruction) instruction.classList.add('hidden');
-        if (statsContent) statsContent.classList.remove('hidden');
-
-        document.getElementById('street-name').innerText = streetName;
-        document.getElementById('pci-score').innerText = `Score: ${score}`;
-        document.getElementById('pci-label').innerText = `Condition: ${status}`;
-        
-        // Reset and show loading state
-        document.getElementById('ai-narrative').innerText = "Analyzing infrastructure data and generating report...";
-
-        // Fetch AI narrative from Vercel backend
-        const aiReport = await askGroq(streetName, score, status);
-        document.getElementById('ai-narrative').innerText = aiReport;
+        aiNarrative.innerText = aiReport;
+        statsSection.classList.remove('loading-glow');
     });
+
+    // Optional: Standard Leaflet Popup
+    layer.bindPopup(`<strong>${props.address_st}</strong><br>Condition: ${props.label}`);
 }
 
 // -------------------------------
@@ -132,22 +130,7 @@ async function askGroq(street, score, label) {
         const data = await response.json();
         return data.result || "AI could not generate a report.";
     } catch (err) {
-        console.error("Error details:", err);
+        console.error("Error connecting to AI:", err);
         return "Error connecting to AI service.";
     }
-    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
