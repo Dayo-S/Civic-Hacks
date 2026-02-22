@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brookline Infrastructure Map</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Brookline Infrastructure Spotlight</h1>
+  </header>
+
+  <div id="map" style="width: 100vw; height: 100vh;"></div>
+
+  <div class="glass-card" id="stats-section" class="hidden">
+    <div class="card-header">
+      <h3 id="street-name">Click a street</h3>
+    </div>
+    <div class="stat-badge">
+      <span id="pci-score">Score: —</span>
+      <span id="pci-label">Condition: —</span>
+    </div>
+    <p id="instruction">
+      Tap a highlighted street to see its condition and an AI-generated spotlight.
+    </p>
+    <p id="ai-narrative">
+      Waiting for a street selection…
+    </p>
+  </div>
+
+   <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+  <script src="spotlight.js"></script>
+</body>
+</html>
