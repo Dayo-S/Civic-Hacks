@@ -100,7 +100,21 @@ async function askGroq(street, score, label) {
         console.error("Error details:", err);
         return "Error connecting to AI service.";
     }
+    
+const legend = document.querySelector('.key');
+if (legend) {
+    legend.style.display = 'flex';
+    legend.style.flexWrap = 'wrap';
+    legend.style.justifyContent = 'center';
+    legend.style.gap = '20px';
+    legend.style.padding = '20px';
+    legend.style.marginTop = '20px';
+    
+    // Clean up the <br> tags if they exist to prevent weird spacing
+    const breaks = legend.querySelectorAll('br');
+    breaks.forEach(br => br.remove());
 }
+
 
 
 
